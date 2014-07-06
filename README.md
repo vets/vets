@@ -3,6 +3,26 @@ vets
 
 Volunteer Effort Tracking System
 
-Rewriting from a 1.0 using Rails to a 2.0 using bottle.py
+Originally designed for our local SPCA to track its volunteer hours,
+this project is being re-written to be more lightweight and generic.
 
-Not presently expected to work, just setting up initial stuff to work with the existing database tables, etc.
+The core functionality consists of managing volunteers' names, emails,
+phone numbers, and orientation dates, as well as providing a sign-in/
+sign-out page where volunteers can select a category for the time
+they spent volunteering. On a periodic basis, volunteer coordinators
+can run reports to display information like total time a volunteer
+contributed over a given time period or total time spent on a given
+category (e.g. office work, dog walking, cat socialization).
+
+Homepage and documentation: https://github.com/ceeekay/vets/
+
+status
+------
+Undergoing major re-write from Rails 5 years ago including
+a bunch of functionality that didn't get utilized to bottle.py
+which should remain focused, lightweight, and maintainable.
+
+Initial versions are going to look ugly as the priority will
+be getting something basic that works, then interating on
+improvements for cleaner, faster code.
+
