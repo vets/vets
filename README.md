@@ -23,6 +23,6 @@ a bunch of functionality that didn't get utilized to bottle.py
 which should remain focused, lightweight, and maintainable.
 
 Initial versions are going to look ugly as the priority will
-be getting something basic that works, then interating on
+be getting something basic that works, then iterating on
 improvements for cleaner, faster code.
 
