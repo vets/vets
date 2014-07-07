@@ -162,5 +162,6 @@ def send_static(filename):
 #    return static_file('favicon.png', root='static')
 
 # Go, go, go!
-run(host="", port=8888, reloader=True, debug=True)
+# run(host="", port=8888, reloader=True, debug=True)
+run(host="", port=8080, reloader=True, debug=True)
 
