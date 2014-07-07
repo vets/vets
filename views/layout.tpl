@@ -12,8 +12,6 @@
         {{title}}
       </title>
     %end
-    <!-- <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1"> -->
-    %include('styles.tpl')
 </head>
 <body>
   %if defined('message'):

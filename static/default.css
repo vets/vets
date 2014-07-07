@@ -1,3 +1,5 @@
+/* FlowerCollection , a free, fully standards-compliant CSS template designed by TEMPLATED */
+
 html, body {
 	height: 100%;
 }
@@ -7,7 +9,7 @@ body {
 	padding: 0;
 	/*background: url(images/main-bg.jpg) repeat;*/
 	font-family: Arial, Helvetica, sans-serif;
-	font-size: 14px;
+	font-size: 12px;
 	font-weight: 200;
 	color: #454545;
 }
@@ -17,7 +19,7 @@ h1, h2, h3 {
 	padding: 0;
 	font-weight: 300;
 	font-family: 'Oswald', sans-serif;
-	color: #1D1D22;
+	color: #221D1D;
 }
 
 h2 {
@@ -36,7 +38,7 @@ strong {
 }
 
 a {
-	color: #7755FF;
+	color: #C81F18;
 }
 
 a:hover {
@@ -93,9 +95,9 @@ hr {
 /* Logo */
 
 #logo {
-	width: 100%;
-	height: 100px;
-	margin: 0px auto 50px auto;
+	width: 960px;
+	height: 150px;
+	margin: 0px auto 30px auto;
 	color: #000000;
 }
 
@@ -130,15 +132,15 @@ hr {
 	border: none;
 	background: none;
 	text-decoration: none;
-	color: #7755FF;
+	color: #C81F18;
 }
 
 /** MENU */
 
 #menu {
 	overflow: hidden;
-	width: 100%;
-	background: #7755FF;
+	width: 1200px;
+	background: #C81F18;
 	font-size: 20px;
 	color: #000000;
 }
@@ -157,7 +159,7 @@ hr {
 
 #menu a {
 	display: block;
-	padding: 15px 15px 15px 15px;
+	padding: 15px 40px 15px 40px;
 	text-decoration: none;
 	text-transform: uppercase;
 	text-align: center;
@@ -173,7 +175,7 @@ hr {
 }
 
 #menu .current_page_item a {
-	background: #7755FF;
+	background: #950D08;
 	color: #FFFFFF;
 }
 
@@ -395,3 +397,17 @@ hr {
 	color: #FFFFFF;
 }
 
+/* Added CSS */
+
+/* Tables */
+
+th {
+    color: #FFFFFF;
+    background-color: #C81F18;
+}
+tr td {
+    background-color: #FFFFFF;
+}
+tr.highlight td {
+    background-color: #EEEEEE;
+}
