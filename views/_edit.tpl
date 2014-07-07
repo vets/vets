@@ -11,9 +11,9 @@
   <tr>
     <td>{{col}}</td>
     %if defined('id'):
-     <td><input name="{{col}}" type="text" value="{{values[idx]}}"/></td>
+     <td><input name="{{col.lower()}}" type="text" value="{{values[idx]}}"/></td>
     %else:
-     <td><input name="{{col}}" type="text" /></td>
+     <td><input name="{{col.lower()}}" type="text" /></td>
     %end
   </tr>
 %end

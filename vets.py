@@ -12,7 +12,7 @@ __author__ = 'Kevin Worth'
 __version__ = '0.01-dev'
 __license__ = 'MIT'
 
-import os, re, time, sqlite3
+import os, re, sqlite3, datetime
 from vendor.bottle import route, run, template, get, post, request, error, install, static_file, response
 
 #Globals to avoid repeating myself
@@ -45,7 +45,7 @@ def list_volunteers(message=''):
 @route('/volunteers/new')
 def new_user_form():
     title = 'New Volunteer'
-    columns = '"Name"'
+    columns = '"Name", "Phone", "Email", "Orientation", "Status"'
     column_list = [x.strip().replace('\"','') for x in columns.split(',')]
     return template('_edit', node='volunteers', title=title, nav=nav, message=message, cols=column_list)
 
@@ -53,8 +53,18 @@ def new_user_form():
 def new_user_submit():
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    c.execute('INSERT INTO volunteers ("Name") values (?)',
-        (request.forms.get("Name"),) )
+    c.execute('INSERT INTO volunteers ("name", "phone", "email", "orientation", "status", "created_at", "updated_at")\
+      values (?, ?, ?, ?, ?, ?, ?)',
+        (
+         request.forms.get("name"),
+         request.forms.get("phone"),
+         request.forms.get("email"),
+         request.forms.get("orientation"),
+         request.forms.get("status"),
+         datetime.datetime.now(),
+         datetime.datetime.now()
+        )
+      )
     new_id = c.lastrowid
     conn.commit()
     c.close()
@@ -64,7 +74,7 @@ def new_user_submit():
 @route('/volunteers/<id>')
 def show_user(id):
     title = 'Show Volunteer'
-    columns = '"Name"'
+    columns = '"Name", "Phone", "Email", "Orientation", "Status"'
     column_list = [x.strip().replace('\"','') for x in columns.split(',')]
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
@@ -77,11 +87,11 @@ def show_user(id):
 @route('/volunteers/<id>/edit')
 def edit_user_form(id):
     title = 'Edit Volunteer'
-    columns = '"Name"'
+    columns = '"Name", "Phone", "Email", "Orientation", "Status"'
     column_list = [x.strip().replace('\"','') for x in columns.split(',')]
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (columns), (id,))
+    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (columns.lower()), (id,))
     result = c.fetchone()
     c.close()
     conn.close()
@@ -91,8 +101,18 @@ def edit_user_form(id):
 def edit_user_submit(id):
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    c.execute('UPDATE volunteers SET "Name" = ? where id LIKE ?',
-        (request.forms.get("Name"), id))
+    c.execute('UPDATE volunteers SET "name" = ?, "phone" = ?, "email" = ?, "orientation" = ?, "status" = ?, "updated_at" = ?\
+      where id LIKE ?',
+        (
+         request.forms.get("name"),
+         request.forms.get("phone"),
+         request.forms.get("email"),
+         request.forms.get("orientation"),
+         request.forms.get("status"),
+         datetime.datetime.now(),
+         id
+        )
+      )
     conn.commit()
     c.close()
     conn.close()
