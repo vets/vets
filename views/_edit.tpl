@@ -7,11 +7,11 @@
 %end
 
 <table border='0'>
-%for idx, col in enumerate(cols):
+%for idx, col in enumerate(cols[1:6]):
   <tr>
     <td>{{col}}</td>
     %if defined('id'):
-     <td><input name="{{col.lower()}}" type="text" value="{{values[idx]}}"/></td>
+     <td><input name="{{col.lower()}}" type="text" value="{{values[idx+1]}}"/></td>
     %else:
      <td><input name="{{col.lower()}}" type="text" /></td>
     %end

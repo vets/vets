@@ -1,14 +1,14 @@
 %rebase('layout.tpl', title=title, nav=nav, message=message)
 
 <table border="0">
-%for idx, col in enumerate(cols):
+%for idx, col in enumerate(cols[1:]):
   %if idx % 2:
   <tr class="highlight">
   %else:
   <tr >
   %end
    <td><b>{{col}}<b></td>
-   <td>{{row[idx]}}</td>
+   <td>{{row[idx+1]}}</td>
   </tr>
 %end
 </table>

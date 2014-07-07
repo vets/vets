@@ -8,7 +8,7 @@ Homepage and documentation: http://github.com/ceeekay/vets/
 Copyright (c) 2014, Kevin Worth
 License: MIT (see LICENSE for details)
 """
-__author__ = 'Kevin Worth'
+__author__  = 'Kevin Worth'
 __version__ = '0.01-dev'
 __license__ = 'MIT'
 
@@ -20,8 +20,10 @@ from vendor.bottle import route, run, template, get, post, request, error, insta
 db_file="db/test.sqlite3"
 nav = ['Volunteers', 'Hours']
 message = ''
-columns = 'id, junk'
-column_list = [x.strip().replace('\"','') for x in columns.split(',')]
+
+# Default columns besides internal created_at and updated_at ones
+volunteer_columns = 'id, name, phone, email, orientation, status'
+volunteer_column_list = [x.strip().replace('\"','') for x in volunteer_columns.split(',')]
 
 #Cheesy way to hide admin controls (edit/delete) most of the time
 global admin
@@ -31,26 +33,22 @@ admin = False
 @route('/volunteers')
 def list_volunteers(message=''):
     title = 'Volunteers'
-    columns = 'id, Name, Phone, Email, Orientation' #, Status, created_at, updated_at'
-    column_list = [x.strip().replace('\"','') for x in columns.split(',')]
-    columns = 'id, Name, Phone, Email, date(Orientation)'
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    c.execute("SELECT %s FROM volunteers WHERE status LIKE ? ORDER BY name" % (columns), ("active",))
+    c.execute("SELECT %s FROM volunteers WHERE status LIKE ? ORDER BY name" % (volunteer_columns), ("active",))
     result = c.fetchall()
     c.close()
     conn.close()
-    return template('_list', node='volunteers', title=title, nav=nav, message=message, rows=result, cols=column_list, admin=admin)
+    return template('_list', node='volunteers', title=title, nav=nav, message=message,
+                    rows=result, cols=volunteer_column_list, admin=admin)
 
 @route('/volunteers/new')
-def new_user_form():
+def new_volunteer_form():
     title = 'New Volunteer'
-    columns = '"Name", "Phone", "Email", "Orientation", "Status"'
-    column_list = [x.strip().replace('\"','') for x in columns.split(',')]
-    return template('_edit', node='volunteers', title=title, nav=nav, message=message, cols=column_list)
+    return template('_edit', node='volunteers', title=title, nav=nav, message=message, cols=volunteer_column_list)
 
 @route('/volunteers/new', method='POST')
-def new_user_submit():
+def new_volunteer_submit():
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute('INSERT INTO volunteers ("name", "phone", "email", "orientation", "status", "created_at", "updated_at")\
@@ -72,33 +70,31 @@ def new_user_submit():
     return list_volunteers(message="Added successfully")
 
 @route('/volunteers/<id>')
-def show_user(id):
+def show_volunteer(id):
     title = 'Show Volunteer'
-    columns = '"Name", "Phone", "Email", "Orientation", "Status"'
-    column_list = [x.strip().replace('\"','') for x in columns.split(',')]
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (columns), (id,))
+    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (volunteer_columns), (id,))
     result = c.fetchone()
     c.close()
     conn.close()
-    return template('_show', node='volunteers', title=title, nav=nav, message=message, id=id, row=result, cols=column_list, admin=admin)
+    return template('_show', node='volunteers', title=title, nav=nav, message=message, id=id, row=result, 
+                    cols=volunteer_column_list, admin=admin)
 
 @route('/volunteers/<id>/edit')
-def edit_user_form(id):
+def edit_volunteer_form(id):
     title = 'Edit Volunteer'
-    columns = '"Name", "Phone", "Email", "Orientation", "Status"'
-    column_list = [x.strip().replace('\"','') for x in columns.split(',')]
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (columns.lower()), (id,))
+    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (volunteer_columns), (id,))
     result = c.fetchone()
     c.close()
     conn.close()
-    return template('_edit', node='volunteers', title=title, nav=nav, message=message, id=id, cols=column_list, values=result)
+    return template('_edit', node='volunteers', title=title, nav=nav, message=message, id=id,
+                    cols=volunteer_column_list, values=result)
 
 @route('/volunteers/<id>/edit', method='POST')
-def edit_user_submit(id):
+def edit_volunteer_submit(id):
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute('UPDATE volunteers SET "name" = ?, "phone" = ?, "email" = ?, "orientation" = ?, "status" = ?, "updated_at" = ?\
@@ -119,20 +115,19 @@ def edit_user_submit(id):
     return list_volunteers(message="Updated successfully")
 
 @route('/volunteers/<id>/delete')
-def delete_user_confirm(id):
+def delete_volunteer_confirm(id):
     title = 'Delete Volunteer'
-    columns = '"Name"'
-    column_list = [x.strip().replace('\"','') for x in columns.split(',')]
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
-    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (columns), (id,))
+    c.execute("SELECT %s FROM volunteers WHERE id LIKE ?" % (volunteer_columns), (id,))
     result = c.fetchone()
     c.close()
     conn.close()
-    return template('_show', node='volunteers', title=title, nav=nav, message=message, id=id, row=result, cols=column_list, admin=admin, delete=True)
+    return template('_show', node='volunteers', title=title, nav=nav, message=message, id=id,
+                    row=result, cols=volunteer_column_list, admin=admin, delete=True)
 
 @route('/volunteers/<id>/delete', method='POST')
-def delete_user_submit(id):
+def delete_volunteer_submit(id):
     conn = sqlite3.connect(db_file)
     c = conn.cursor()
     c.execute("DELETE FROM volunteers WHERE id LIKE ?", (id,))
@@ -141,6 +136,9 @@ def delete_user_submit(id):
     conn.close()
     return list_volunteers(message="Deleted successfully")
 
+@route('/hours')
+def hours_list():
+    return list_volunteers(message="Hours are still a TODO!")
 
 @route('/admin')
 def admin_on():
