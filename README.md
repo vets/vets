@@ -14,7 +14,7 @@ can run reports to display information like total time a volunteer
 contributed over a given time period or total time spent on a given
 category (e.g. office work, dog walking, cat socialization).
 
-Homepage and documentation: https://github.com/ceeekay/vets/
+Homepage and documentation: https://github.com/vets/vets
 
 status
 ------
