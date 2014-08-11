@@ -1,9 +1,9 @@
 %rebase('layout.tpl', title=title, nav=nav, message=message)
 
 <table border="0">
-  <tr> <td><b>Name<b></td> <td>{{values[1]}}</td> </tr>
-  <tr> <td><b>Orientation<b></td> <td>{{values[2]}}</td> </tr>
-  <tr> <td><b>Status<b></td> <td>{{values[3]}}</td> </tr>
+  <tr> <td><b>Name<b></td> <td>{{values['name']}}</td> </tr>
+  <tr> <td><b>Orientation<b></td> <td>{{values['date(orientation)']}}</td> </tr>
+  <tr> <td><b>Status<b></td> <td>{{values['status']}}</td> </tr>
 </table>
 
 %if defined('delete'):

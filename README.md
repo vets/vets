@@ -26,3 +26,8 @@ Initial versions are going to look ugly as the priority will
 be getting something basic that works, then iterating on
 improvements for cleaner, faster code.
 
+deployment
+----------
+VETS includes a copy of bottle.py in vendor/ that is known to work
+(though it is likely newer versions also work). All you should need
+on a machine is Python (known to work with 2.7).
