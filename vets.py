@@ -9,7 +9,7 @@ Copyright (c) 2014, Kevin Worth
 License: MIT (see LICENSE for details)
 """
 __author__  = 'Kevin Worth'
-__version__ = '0.02-dev'
+__version__ = '0.03-dev'
 __license__ = 'MIT'
 
 import os, re, sqlite3, datetime
