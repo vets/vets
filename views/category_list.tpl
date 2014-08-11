@@ -16,8 +16,9 @@
     %else:
       <tr>
     %end
-        <td><a href="/categories/{{row['id']}}">{{row['name']}}</a></td>
+        <td>{{row['name']}}</td>
         <td>{{row['status']}}</td>
+        <td><a href="/categories/{{row['id']}}/edit"><input type="button" value="Edit" /></a></td>
       </tr>
   %end
 </table>

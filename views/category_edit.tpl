@@ -16,27 +16,21 @@
     %end
   </tr>
   <tr>
-    %if defined('id'):
-      %if values['status'] == "active":
-        <td><input type="radio" name="status" value="active" checked="checked">Active</td>
-        <td><input type="radio" name="status" value="inactive">Inactive</td>
-      %else:
-        <td><input type="radio" name="status" value="active">Active</td>
-        <td><input type="radio" name="status" value="inactive" checked="checked">Inactive</td>
-      %end
-    %else:
+    %if (not defined('id')) or (defined('id') and (values['status'] == "active")):
       <td><input type="radio" name="status" value="active" checked="checked">Active</td>
       <td><input type="radio" name="status" value="inactive">Inactive</td>
+    %else:
+      <td><input type="radio" name="status" value="active">Active</td>
+      <td><input type="radio" name="status" value="inactive" checked="checked">Inactive</td>
     %end
   </tr>
   <tr>
     %if defined('id'):
-     <td><input type="submit" value="Save" /></td>
-     <td><a href="/categories/{{id}}"><input type="button" value="Cancel"/></a></td>
+      <td><input type="submit" value="Save" /></td>
     %else:
-     <td><input type="submit" value="Create" /></td>
-     <td><a href="/categories"><input type="button" value="Cancel"/></a></td>
+      <td><input type="submit" value="Create" /></td>
     %end
+    <td><a href="/categories"><input type="button" value="Cancel"/></a></td>
   <tr>
 </table>
 </form>

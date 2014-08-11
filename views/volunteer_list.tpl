@@ -17,9 +17,10 @@
     %else:
       <tr>
     %end
-        <td><a href="/volunteers/{{row['id']}}">{{row['name']}}</a></td>
-        <td>{{row['date(orientation)']}}</td>
+        <td>{{row['name']}}</td>
+        <td>{{row['orientation']}}</td>
         <td>{{row['status']}}</td>
+        <td><a href="/volunteers/{{row['id']}}/edit"><input type="button" value="Edit" /></a></td>
       </tr>
   %end
 </table>
