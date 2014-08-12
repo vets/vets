@@ -12,7 +12,7 @@
     %if defined('id'):
       <td><input name="name" type="text" value="{{values['name']}}"/></td>
     %else:
-      <td><input name="name" type="text" value=""/></td>
+      <td><input name="name" type="text" value="" placeholder="Last, First" autofocus/></td>
     %end
   </tr>
   <tr>
