@@ -105,7 +105,11 @@
       <select name="category_id">
           <option value="">Please Select</option>
         %for val in categories:
-          <option value={{val["id"]}}>{{val["name"]}}</option>
+          %if defined('id') and (val["id"] == values["category_id"]):
+            <option value={{val["id"]}} selected>{{val["name"]}}</option>
+          %else:
+            <option value={{val["id"]}}>{{val["name"]}}</option>
+          %end
         %end
       </select>
     </td>

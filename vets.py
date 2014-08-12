@@ -20,7 +20,7 @@ conn = sqlite3.connect("db/test.sqlite3")
 conn.row_factory = sqlite3.Row
 
 #Globals for commonly passed stuff
-nav = ['Hours', 'Volunteers', 'Categories']
+nav = ['Hours', 'Volunteers', 'Categories', 'Report']
 message = ''
 
 
@@ -88,7 +88,8 @@ def check_out_submit(id):
 def delete_hour_confirm(id, title='Delete Record?'):
     with conn:
       c = conn.cursor()
-      c.execute("SELECT id, volunteer_id, category_id, start, end FROM hours WHERE id LIKE ?", (id,))
+      c.execute("SELECT hours.id, volunteers.name AS volunteer, categories.name AS category, strftime('%m-%d %H:%M',start), strftime('%m-%d %H:%M',end) FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id LEFT OUTER JOIN categories ON hours.category_id=categories.id WHERE hours.id LIKE ?", (id,))
+      #c.execute("SELECT id, volunteer_id, category_id, start, end FROM hours WHERE id LIKE ?", (id,))
       result = c.fetchone()
     return template('hour_show', title=title, nav=nav, message=message, id=id, values=result, delete=True)
 
@@ -97,7 +98,7 @@ def delete_hour_submit(id):
     with conn:
       c = conn.cursor()
       c.execute("DELETE FROM hours WHERE id LIKE ?", (id,))
-    return check_in(message="Deleted successfully")
+    return report(message="Deleted successfully")
 
 
 # Volunteer handlers
@@ -197,6 +198,27 @@ def edit_category_submit(id):
       c.execute('UPDATE categories SET "name" = ?, "status" = ?, "updated_at" = ? where id LIKE ?',
         (request.forms.get('name'), request.forms.get('status'), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), id) )
     return list_categories(message="Updated successfully")
+
+# Report Handlers
+@route('/report')
+def report(message='', title='Run Report'):
+    with conn:
+      c = conn.cursor()
+      c.execute("SELECT hours.id, volunteers.name AS volunteer, categories.name AS category, strftime('%m-%d %H:%M',start), strftime('%m-%d %H:%M',end) FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id LEFT OUTER JOIN categories ON hours.category_id=categories.id ORDER BY start")
+      hours = c.fetchall()
+    return template('report', title=title, nav=nav, message=message, rows=hours)
+
+@route('/report', method='POST')
+def report_submit():
+    if request.forms.get('volunteer_id') == '':
+      return check_in("Please select your Name")
+    with conn:
+      c = conn.cursor()
+      c.execute('INSERT INTO hours ("volunteer_id", "start", "created_at", "updated_at") VALUES (?, ?, ?, ?)',
+          (request.forms.get("volunteer_id"), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+          datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"), datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") ) )
+      new_id = c.lastrowid
+    return check_in(message="Checked In Successfully!")
 
 
 # Miscellaneous Handlers
