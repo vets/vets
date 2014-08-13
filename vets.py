@@ -20,7 +20,7 @@ conn = sqlite3.connect("db/development.sqlite3")
 conn.row_factory = sqlite3.Row
 
 #Globals for commonly passed stuff
-nav = ['Home', 'Hours', 'Volunteers', 'Activities']
+nav = ['Home', 'Hours', 'Volunteers', 'Activities', 'Backup']
 message = ''
 
 
@@ -232,6 +232,14 @@ def send_static(filename):
 #@route('/favicon.ico')
 #def send_favicon():
 #    return static_file('favicon.png', root='static')
+
+@route('/backup')
+def db_backup():
+  with open("db/backups/backup-{}.sql".format(datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w') as f:
+    with conn:
+      for line in conn.iterdump():
+        f.write("{}\n".format(line))
+  return check_in_form(message="Database Backed Up Successfully!")
 
 # Go, go, go!
 run(host="", port=8080, reloader=True, debug=True)
