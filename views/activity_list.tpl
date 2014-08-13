@@ -1,10 +1,10 @@
 %rebase ('layout.tpl', title=title, nav=nav, message=message)
 
-<a href="/categories/new"><input type="button" value="New"/></a>
+<a href="/activities/new"><input type="button" value="New"/></a>
 %if status == 'active':
-<a href="/categories/inactive"><input type="button" value="Inactive"/></a>
+<a href="/activities/inactive"><input type="button" value="Inactive"/></a>
 %else:
-<a href="/categories"><input type="button" value="Active"/></a>
+<a href="/activities"><input type="button" value="Active"/></a>
 %end
 
 <table border="0">
@@ -18,7 +18,7 @@
     %end
         <td>{{row['name']}}</td>
         <td>{{row['status']}}</td>
-        <td><a href="/categories/{{row['id']}}/edit"><input type="button" value="Edit" /></a></td>
+        <td><a href="/activities/{{row['id']}}/edit"><input type="button" value="Edit" /></a></td>
       </tr>
   %end
 </table>

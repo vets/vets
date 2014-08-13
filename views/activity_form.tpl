@@ -1,9 +1,9 @@
 %rebase('layout.tpl', title=title, nav=nav)
 
 %if defined('id'):
-<form method="POST" action="/volunteers/{{id}}/edit">
+<form method="POST" action="/activities/{{id}}/edit">
 %else:
-<form method="POST" action="/volunteers/new">
+<form method="POST" action="/activities/new">
 %end
 
 <table border='0'>
@@ -12,15 +12,7 @@
     %if defined('id'):
       <td><input name="name" type="text" value="{{values['name']}}"/></td>
     %else:
-      <td><input name="name" type="text" value="" placeholder="Last, First" autofocus/></td>
-    %end
-  </tr>
-  <tr>
-    <td>Orientation</td>
-    %if defined('id'):
-      <td><input type="date" name="orientation" value="{{values['orientation']}}"></td>
-    %else:
-      <td><input type="date" name="orientation" value="{{today}}"></td>
+      <td><input name="name" type="text" value="" placeholder="Enter Name" autofocus/></td>
     %end
   </tr>
   <tr>
@@ -38,7 +30,7 @@
     %else:
       <td><input type="submit" value="Create" /></td>
     %end
-    <td><a href="/volunteers"><input type="button" value="Cancel"/></a></td>
+    <td><a href="/activities"><input type="button" value="Cancel"/></a></td>
   <tr>
 </table>
 </form>

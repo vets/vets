@@ -1,20 +1,12 @@
 %rebase('layout.tpl', title=title, nav=nav)
 
-%if defined('id'):
-<form method="POST" action="/hours/{{id}}/edit">
-%else:
-<form method="POST" action="/hours/new">
-%end
+<form method="POST" action="/checkout/{{id}}">
 
 <table border='0'>
   <tr>
     <td>Checked In</td> 
     <td>
-      %if defined('id'):
-        %timeval = start
-      %else:
-        %timeval = now
-      %end
+      %timeval = start
       <input type="date" name="start_date" value="{{timeval.date()}}">
       <select name="start_hour">
         %for val in range(1,13):
@@ -83,29 +75,18 @@
   <tr>
     <td>Name</td>
       <td>
-        %if defined('id'):
-          <select name="volunteer_id" disabled>
-        %else:
-          <select name="volunteer_id">
-        %end
-              <option value="">Please Select</option>
-          %for val in volunteers:
-            %if defined('id') and (val["id"] == values["volunteer_id"]):
-              <option value={{val["id"]}} selected>{{val["name"]}}</option>
-            %else:
-              <option value={{val["id"]}}>{{val["name"]}}</option>
-            %end
-          %end
+        <select name="volunteer_id" disabled>
+          <option value={{volunteer["id"]}} selected>{{volunteer["name"]}}</option>
         </select>
       </td>
   </tr>
   <tr>
-    <td>Category</td>
+    <td>Activity</td>
     <td>
-      <select name="category_id">
+      <select name="activity_id">
           <option value="">Please Select</option>
-        %for val in categories:
-          %if defined('id') and (val["id"] == values["category_id"]):
+        %for val in activities:
+          %if val["id"] == values["activity_id"]:
             <option value={{val["id"]}} selected>{{val["name"]}}</option>
           %else:
             <option value={{val["id"]}}>{{val["name"]}}</option>
@@ -115,12 +96,8 @@
     </td>
   </tr>
   <tr>
-    %if defined('id'):
-     <td><input type="submit" value="Check Out" /></td>
-    %else:
-     <td><input type="submit" value="Check In" /></td>
-    %end
-    <td><a href="/hours"><input type="button" value="Cancel"/></a></td>
+    <td><input type="submit" value="Check Out" /></td>
+    <td><a href="/"><input type="button" value="Cancel"/></a></td>
   <tr>
 </table>
 </form>
