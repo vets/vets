@@ -32,21 +32,36 @@ deployment
 ----------
 VETS includes a copy of bottle.py in vendor/ that is known to work
 (though it is likely newer versions also work). All you should need
-on a machine is Python 2.5+ and possibly sqlite3 if you want to be
-able to query/edit the database outside of the application.
+on a machine is [Python](https://www.python.org/) 2.5+ and possibly
+[sqlite3](http://www.sqlite.org/), but only if you want to be
+able to query/edit the database outside of the application using the
+sqlite3 command-line tool.
 
 * To initialize the database
-
-    db/init_db.py -c db/development.sqlite3
-
+  * `db/init_db.py -c db/development.sqlite3`
 * To start the server
-
-    vets.py
-
+  * `vets.py`
 * Browse to http://localhost:8080
 
+You can deploy this on Windows easily using [Portable Python](http://portablepython.com)
+(2.7.6.1 has been verified to work but newer ones are probably ok too).
+Simply do a minimal install (about 50MB) and move the contents of the App
+directory to somewhere like C:\vets\python, then you can do
+
+* `C:\vets> python\python.exe db/init_db.py -c db/development.sqlite3`
+* `C:\vets> python\python.exe vets.py`
+* Browse to http://localhost:8080
+
+Also be aware that VETS uses some HTML5 elements (e.g. date picker),
+so for the best experience, use something that supports HTML5 like 
+[Chrome](https://www.google.com/intl/en-US/chrome/browser/)
+
+Obviously you can change database filenames, port numbers, and listening IP
+addresses by editing the code. At some point these might move into a config
+file.
+
 some screenshots
-================
+----------------
 
 ![Check In](/docs/images/checkin.png?raw=true)
 ![Check Out](/docs/images/checkout.png?raw=true)
