@@ -14,6 +14,12 @@ information like total time a volunteer contributed over a given time
 period or total time spent on a given activity 
 (e.g. office work, dog walking, cat socialization).
 
+A simple "backup" link that dumps the database out to disk is also
+included with the hope that erring on the side of filling up disk space
+is better than not having backups at all. The backups are simple .sql
+files that could be cat'ed into sqlite3 to re-create the database as
+it was at the time of the backup.
+
 Homepage and documentation: https://github.com/vets/vets
 
 status
@@ -38,3 +44,17 @@ able to query/edit the database outside of the application.
     vets.py
 
 * Browse to http://localhost:8080
+
+some screenshots
+================
+
+![Check In](/docs/images/checkin.png?raw=true)
+![Check Out](/docs/images/checkout.png?raw=true)
+![Admin Log-In](/docs/images/admin.png?raw=true)
+![Volunteers](/docs/images/volunteers.png?raw=true)
+![Activities](/docs/images/activities.png?raw=true)
+![Backup](/docs/images/backup.png?raw=true)
+![Hours Report](/docs/images/hours.png?raw=true)
+![Hours Report By Volunteer](/docs/images/hours-by-volunteer.png?raw=true)
+![Hours Report By Activity](/docs/images/hours-by-activity.png?raw=true)
+
