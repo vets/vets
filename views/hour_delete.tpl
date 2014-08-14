@@ -1,4 +1,4 @@
-%rebase('layout.tpl', title=title, nav=nav, message=message)
+%rebase ('layout.tpl')
 
 <table border="0">
   <tr> <td><b>Volunteer<b></td> <td>{{values['volunteer']}}</td> </tr>

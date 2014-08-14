@@ -1,4 +1,4 @@
-%rebase('layout.tpl', title=title, nav=nav)
+%rebase ('layout.tpl')
 
 <form method="POST" action="/checkout/{{id}}">
 
@@ -96,8 +96,10 @@
     </td>
   </tr>
   <tr>
-    <td><input type="submit" value="Check Out" /></td>
-    <td><a href="/"><input type="button" value="Cancel"/></a></td>
+    <td>
+      <input type="submit" value="Check Out" />
+      <a href="/"><input type="button" value="Cancel"/></a>
+    </td>
   <tr>
 </table>
 </form>

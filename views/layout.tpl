@@ -14,10 +14,6 @@
     %end
 </head>
 <body>
-  %if defined('message'):
-  {{message}}
-  %end
-
   %if defined('title'):
     <div id="header">
       <div id="logo">
@@ -27,10 +23,23 @@
     </div>
   %end
 
-  %if defined('nav'):
-    %include('nav.tpl', nav=nav)
-  %end
+  <div id="menu">
+  <ul>
+    %if admin == 'true':
+      %nav = ['Home', 'Hours', 'Volunteers', 'Activities', 'Backup', 'Log Out']
+    %else:
+      %nav = ['Home', 'Admin']
+    %end
+    %for v in nav:
+      <li><a href='/{{v.lower().replace(' ','')}}'>{{v}}</a></li>
+    %end
+  </ul>
+  </div>
 
+  %if defined('message'):
+    <p><b>{{message}}</b></p>
+  %end
+  
   {{!base}}
 
 </body>

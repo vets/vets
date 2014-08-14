@@ -1,16 +1,19 @@
-%rebase ('layout.tpl', title=title, nav=nav, message=message)
+%rebase ('layout.tpl')
 
-<a href="/volunteers/new"><input type="button" value="New"/></a>
-%if status == 'active':
-<a href="/volunteers/inactive"><input type="button" value="Inactive"/></a>
-%else:
-<a href="/volunteers"><input type="button" value="Active"/></a>
-%end
+<p>
+  <a href="/volunteers/new"><input type="button" value="New"/></a>
+  %if status == 'active':
+  <a href="/volunteers/inactive"><input type="button" value="Inactive"/></a>
+  %else:
+  <a href="/volunteers"><input type="button" value="Active"/></a>
+  %end
+</p>
 
 <table border="0">
   <th>Name</th>
   <th>Orientation</th>
   <th>Status</th>
+  <th></th>
   %for idx, row in enumerate(rows):
     %if idx % 2:
       <tr class="highlight">

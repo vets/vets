@@ -1,4 +1,4 @@
-%rebase('layout.tpl', title=title, nav=nav)
+%rebase ('layout.tpl')
 
 %if defined('id'):
 <form method="POST" action="/volunteers/{{id}}/edit">

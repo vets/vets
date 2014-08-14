@@ -9,7 +9,7 @@ Copyright (c) 2014, Kevin Worth
 License: MIT (see LICENSE for details)
 """
 __author__  = 'Kevin Worth'
-__version__ = '0.05-dev'
+__version__ = '0.06-dev'
 __license__ = 'MIT'
 
 import os, re, sqlite3, datetime
@@ -19,10 +19,8 @@ from vendor.bottle import route, run, template, get, post, request, error, insta
 conn = sqlite3.connect("db/development.sqlite3")
 conn.row_factory = sqlite3.Row
 
-#Globals for commonly passed stuff
-nav = ['Home', 'Hours', 'Volunteers', 'Activities', 'Backup']
-message = ''
-
+#Change this
+admin_password = "pizza"
 
 # Check in/out handlers
 
@@ -32,11 +30,11 @@ message = ''
 def check_in_form(message='', title='Checked-in Volunteers'):
     with conn:
       c = conn.cursor()
-      c.execute("SELECT hours.id, volunteer_id, volunteers.name AS volunteer, strftime('%m-%d %H:%M',start), end FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id WHERE end is null ORDER BY start")
+      c.execute("SELECT hours.id, volunteer_id, volunteers.name AS volunteer, strftime('%m-%d %H:%M',start), end FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id WHERE end is null ORDER BY volunteer")
       hours = c.fetchall()
       c.execute("SELECT id, name FROM volunteers WHERE status = 'active' ORDER BY name")
       volunteers = c.fetchall()
-    return template('check_in', title=title, nav=nav, message=message, rows=hours, volunteers=volunteers)
+    return template('check_in', title=title, admin=request.get_cookie("admin"), message=message, rows=hours, volunteers=volunteers)
 
 @route('/checkin', method='POST')
 def check_in_submit():
@@ -62,7 +60,7 @@ def check_out_form(id, message='', title='Check Out'):
       c.execute("SELECT id, name FROM activities WHERE status = 'active' ORDER BY name")
       activities = c.fetchall()
     start = datetime.datetime.strptime(result['start'], "%Y-%m-%d %H:%M:%S")
-    return template('check_out', title=title, nav=nav, message=message, now=now,
+    return template('check_out', title=title, admin=request.get_cookie("admin"), message=message, now=now,
                     volunteer=volunteer, activities=activities, id=id, values=result, start=start)
 
 @route('/checkout/<id:int>', method='POST')
@@ -91,7 +89,7 @@ def check_out_submit(id):
 # Hours handlers
 
 @route('/hours')
-def list_hours(message='', title='Hours Report', start=datetime.date.today(), end=datetime.date.today(), group_by=''):
+def list_hours(message='', title='Hours Report', start=datetime.date.today(), end=(datetime.date.today()+datetime.timedelta(days=1)), group_by=''):
     with conn:
       c = conn.cursor()
       if group_by == '':
@@ -101,7 +99,7 @@ def list_hours(message='', title='Hours Report', start=datetime.date.today(), en
       elif group_by == 'activity':
         c.execute("SELECT activities.name AS activity, SUM(strftime('%s',end)-strftime('%s',start))/3600.0 AS totalHours FROM hours JOIN activities ON hours.activity_id=activities.id WHERE start >= ? AND end <= ? GROUP BY activity_id ORDER BY activity", (start, end))
       hours = c.fetchall()
-    return template('hour_list', title=title, nav=nav, message=message, rows=hours, start=start, end=end, group_by=group_by)
+    return template('hour_list', title=title, admin=request.get_cookie("admin"), message=message, rows=hours, start=start, end=end, group_by=group_by)
 
 @route('/hours', method='POST')
 def list_hours_submit():
@@ -113,7 +111,7 @@ def delete_hour_confirm(id, title='Delete Record?'):
       c = conn.cursor()
       c.execute("SELECT hours.id, volunteers.name AS volunteer, activities.name AS activity, strftime('%m-%d %H:%M',start), strftime('%m-%d %H:%M',end) FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id LEFT OUTER JOIN activities ON hours.activity_id=activities.id WHERE hours.id LIKE ?", (id,))
       result = c.fetchone()
-    return template('hour_delete', title=title, nav=nav, message=message, id=id, values=result, delete=True)
+    return template('hour_delete', title=title, admin=request.get_cookie("admin"), message=message, id=id, values=result, delete=True)
 
 @route('/hours/<id:int>/delete', method='POST')
 def delete_hour_submit(id):
@@ -133,12 +131,12 @@ def list_volunteers(message='', status='active', title='Volunteers'):
       c = conn.cursor()
       c.execute("SELECT id, name, date(orientation) as orientation, status FROM volunteers WHERE status = ? ORDER BY name", (status,))
       result = c.fetchall()
-    return template('volunteer_list', title=title, nav=nav, message=message, rows=result, status=status)
+    return template('volunteer_list', title=title, admin=request.get_cookie("admin"), message=message, rows=result, status=status)
 
 @route('/volunteers/new')
 def new_volunteer_form(message='', title='New Volunteer'):
     today = datetime.date.today()
-    return template('volunteer_form', title=title, nav=nav, message=message, today=today)
+    return template('volunteer_form', title=title, admin=request.get_cookie("admin"), message=message, today=today)
 
 @route('/volunteers/new', method='POST')
 def new_volunteer_submit():
@@ -160,7 +158,7 @@ def edit_volunteer_form(id, message='', title='Edit Volunteer'):
       c = conn.cursor()
       c.execute("SELECT id, name, date(orientation) as orientation, status FROM volunteers WHERE id LIKE ?", (id,))
       result = c.fetchone()
-    return template('volunteer_form', title=title, nav=nav, message=message, id=id, values=result)
+    return template('volunteer_form', title=title, admin=request.get_cookie("admin"), message=message, id=id, values=result)
 
 @route('/volunteers/<id:int>/edit', method='POST')
 def edit_volunteer_submit(id):
@@ -185,11 +183,11 @@ def list_activities(message='', status='active', title='Activities'):
       c = conn.cursor()
       c.execute("SELECT id, name, status FROM activities WHERE status = ? ORDER BY name", (status,))
       result = c.fetchall()
-    return template('activity_list', title=title, nav=nav, message=message, rows=result, status=status)
+    return template('activity_list', title=title, admin=request.get_cookie("admin"), message=message, rows=result, status=status)
 
 @route('/activities/new')
 def new_activity_form(message='', title='New Activity'):
-    return template('activity_form', title=title, nav=nav, message=message)
+    return template('activity_form', title=title, admin=request.get_cookie("admin"), message=message)
 
 @route('/activities/new', method='POST')
 def new_activity_submit():
@@ -209,7 +207,7 @@ def edit_activity_form(id, message='', title='Edit Activity'):
       c = conn.cursor()
       c.execute("SELECT id, name, status FROM activities WHERE id LIKE ?", (id,))
       result = c.fetchone()
-    return template('activity_form', title=title, nav=nav, message=message, id=id, values=result)
+    return template('activity_form', title=title, admin=request.get_cookie("admin"), message=message, id=id, values=result)
 
 @route('/activities/<id:int>/edit', method='POST')
 def edit_activity_submit(id):
@@ -224,6 +222,33 @@ def edit_activity_submit(id):
 
 # Miscellaneous Handlers
 
+@route('/admin')
+def admin_login_form(message=''):
+  return template('admin_login', title="Admin Log-in", admin=request.get_cookie("admin"), message=message)
+
+@route('/admin', method='POST')
+def admin_login_submit(message=''):
+  password = request.forms.get('password')
+  if password == admin_password:
+    response.set_cookie("admin", "true")
+    return template('message_only', title='Admin Logged In', admin='true', message='Admin Log-in Successful')
+  else:
+    return admin_login_form(message="Bad Password")
+
+@route('/logout')
+def admin_logout(message=''):
+  response.set_cookie("admin", "false", expires=0)
+  return template('message_only', title='Admin Logged Out', admin='', message='Admin Log-out Successful')
+
+@route('/backup')
+def db_backup():
+  filename = "db/backups/backup-{}.sql".format(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+  with open(filename, 'w') as f:
+    with conn:
+      for line in conn.iterdump():
+        f.write("{}\n".format(line))
+  return template('message_only', title='Database Backup', admin=request.get_cookie("admin"), message='Database Backed up to {}'.format(filename))
+
 @route('/static/<filename:path>')
 def send_static(filename):
     return static_file(filename, root='static')
@@ -232,14 +257,6 @@ def send_static(filename):
 #@route('/favicon.ico')
 #def send_favicon():
 #    return static_file('favicon.png', root='static')
-
-@route('/backup')
-def db_backup():
-  with open("db/backups/backup-{}.sql".format(datetime.datetime.now().strftime("%Y%m%d%H%M%S")), 'w') as f:
-    with conn:
-      for line in conn.iterdump():
-        f.write("{}\n".format(line))
-  return check_in_form(message="Database Backed Up Successfully!")
 
 # Go, go, go!
 run(host="", port=8080, reloader=True, debug=True)

@@ -1,10 +1,9 @@
-%rebase ('layout.tpl', title=title, nav=nav, message=message)
+%rebase ('layout.tpl')
 
 <form method="POST" action="/hours">
-  <table><tr>
-    <td>From <input type="date" name="start" value="{{start}}"></td>
-    <td>To <input type="date" name="end" value="{{end}}"></td>
-    <td>Sum <select name="group_by">
+    From <input type="date" name="start" value="{{start}}">
+    To <input type="date" name="end" value="{{end}}">
+    Sum <select name="group_by">
       <option value="">None</option>
       %if group_by == 'volunteer':
         <option value="volunteer" selected>Volunteer</option>
@@ -16,30 +15,34 @@
       %else:
         <option value="activity">Activity</option>
       %end
-    </select></td>
-    <td><input type="submit" value="Report" /></td>
-    <td><a href="/hours"><input type="button" value="Clear"/></a></td>
+    </select>
+    <input type="submit" value="Report" />
+    <a href="/hours"><input type="button" value="Clear"/></a>
   </tr></table>
 </form>
 
+</br>
+
 %if group_by == '':
 <table border="0">
+  <th>Name</th>
+  <th>Activity</th>
   <th>Checked In</th>
   <th>Checked Out</th>
   <th>Hours</th>
-  <th>Name</th>
-  <th>Activity</th>
+  <th></th>
+  <th></th>
   %for idx, row in enumerate(rows):
     %if idx % 2:
       <tr class="highlight">
     %else:
       <tr>
     %end
+        <td>{{row['volunteer']}}</td>
+        <td>{{row['activity']}}</td>
         <td>{{row['strftime(\'%m-%d %H:%M\',start)']}}</td>
         <td>{{row['strftime(\'%m-%d %H:%M\',end)']}}</td>
         <td>{{row['totalHours']}}</td>
-        <td>{{row['volunteer']}}</td>
-        <td>{{row['activity']}}</td>
         <td><a href="/checkout/{{row['id']}}"><input type="button" value="Edit"/></a></td>
         <td><a href="/hours/{{row['id']}}/delete"><input type="button" value="Delete"/></a></td>
       </tr>
