@@ -9,18 +9,12 @@ Copyright (c) 2014, Kevin Worth
 License: MIT (see LICENSE for details)
 """
 __author__  = 'Kevin Worth'
-__version__ = '0.06-dev'
+__version__ = '0.07-dev'
 __license__ = 'MIT'
 
-import os, re, sqlite3, datetime
+import os, re, sqlite3, datetime, ConfigParser
 from vendor.bottle import route, run, template, get, post, request, error, install, static_file, response
 
-#Database settings
-conn = sqlite3.connect("db/development.sqlite3")
-conn.row_factory = sqlite3.Row
-
-#Change this
-admin_password = "pizza"
 
 # Check in/out handlers
 
@@ -255,8 +249,57 @@ def send_static(filename):
 
 # TODO find/make a logo
 #@route('/favicon.ico')
-#def send_favicon():
-#    return static_file('favicon.png', root='static')
+def send_favicon():
+    return static_file('favicon.png', root='static')
 
-# Go, go, go!
-run(host="", port=8080, reloader=True, debug=True)
+
+# Stuff to parse configs and handle databases
+
+# Values for a default config file
+cfg_file       = "vets.cfg"
+db_file        = "db/test.sqlite3"
+admin_password = "pizza"
+host           = ""
+port           = 8080
+debug          = True
+
+def create_default_config():
+  with open(cfg_file, 'w') as f:
+    f.write("# Change values to suit your needs\n# Don't use a valuable password since it's stored and send in the clear\n")
+    Config.add_section('VETS')
+    Config.set('VETS', 'dbFile', db_file)
+    Config.set('VETS', 'adminPassword', admin_password)
+    Config.set('VETS', 'host', host)
+    Config.set('VETS', 'port', port)
+    Config.set('VETS', 'debug', debug)
+    Config.write(f)
+  
+def create_empty_database():
+  with sqlite3.connect(db_file) as conn:
+    c = conn.cursor()
+    c.execute('CREATE TABLE "volunteers" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" VARCHAR(255), "orientation" TIMESTAMP, "status" VARCHAR(255), "created_at" TIMESTAMP, "updated_at" TIMESTAMP)')
+    c.execute('CREATE TABLE "activities" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "name" VARCHAR(255), "status" VARCHAR(255), "created_at" TIMESTAMP, "updated_at" TIMESTAMP)')
+    c.execute('CREATE TABLE "hours" ("id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, "volunteer_id" INTEGER, "start" TIMESTAMP, "end" TIMESTAMP, "activity_id" INTEGER, "created_at" TIMESTAMP, "updated_at" TIMESTAMP)')
+
+# Check and parse config file
+Config = ConfigParser.ConfigParser()
+if os.path.isfile(cfg_file) == False:
+  print("Creating default values in {}".format(cfg_file))
+  create_default_config()
+Config.read(cfg_file)
+db_file        = Config.get('VETS', 'dbFile')
+admin_password = Config.get('VETS', 'adminPassword')
+host           = Config.get('VETS', 'host')
+port           = Config.get('VETS', 'port')
+debug          = Config.get('VETS', 'debug')
+
+# Check and load database file
+if os.path.isfile(db_file) == False:
+  print("Creating empty database in {}".format(db_file))
+  create_empty_database()
+conn = sqlite3.connect(db_file)
+conn.row_factory = sqlite3.Row
+
+
+# Actually start the server
+run(host=host, port=port, reloader=debug, debug=debug)
