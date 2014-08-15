@@ -20,7 +20,7 @@ A simple "backup" link that dumps the database out to disk is also
 included with the hope that risking filling up disk space is better
 than not having backups at all. The backups are simple .sql files 
 that can be used at a sqlite3 command line or via the
-db/restore_backup.py script.
+db/restore_db.py script.
 
 Homepage and documentation: https://github.com/vets/vets
 
