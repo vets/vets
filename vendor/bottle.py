@@ -1991,9 +1991,9 @@ class WSGIHeaderDict(DictMixin):
     def __iter__(self):
         for key in self.environ:
             if key[:5] == 'HTTP_':
-                yield key[5:].replace('_', '-').title()
+                yield _hkey(key[5:])
             elif key in self.cgikeys:
-                yield key.replace('_', '-').title()
+                yield _hkey(key)
 
     def keys(self): return [x for x in self]
     def __len__(self): return len(self.keys())
@@ -2663,7 +2663,11 @@ class WSGIRefServer(ServerAdapter):
 
         self.srv = make_server(self.host, self.port, app, server_cls, handler_cls)
         self.port = self.srv.server_port # update port actual port (0 means random)
-        self.srv.serve_forever()
+        try:
+            self.srv.serve_forever()
+        except KeyboardInterrupt:
+            self.srv.server_close() # Prevent ResourceWarning: unclosed socket
+            raise
 
 
 class CherryPyServer(ServerAdapter):
