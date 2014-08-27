@@ -265,7 +265,7 @@ debug          = True
 
 def create_default_config():
   with open(cfg_file, 'w') as f:
-    f.write("# Change values to suit your needs\n# Don't use a valuable password since it's stored and send in the clear\n")
+    f.write("# Change values to suit your needs\n# Don't use a valuable password since it's stored and sent in the clear\n")
     Config.add_section('VETS')
     Config.set('VETS', 'dbFile', db_file)
     Config.set('VETS', 'adminPassword', admin_password)
