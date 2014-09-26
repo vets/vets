@@ -9,7 +9,7 @@ Copyright (c) 2014, Kevin Worth
 License: MIT (see LICENSE for details)
 """
 __author__ = 'Kevin Worth'
-__version__ = '0.08-dev'
+__version__ = '0.09-dev'
 __license__ = 'MIT'
 
 import os
@@ -52,7 +52,6 @@ def check_in_submit():
 
 @route('/checkout/<id:int>')
 def check_out_form(id, message='', title='Check Out'):
-    now = datetime.datetime.now()
     with conn:
         c = conn.cursor()
         c.execute("SELECT id, volunteer_id, activity_id, start, end FROM hours WHERE id LIKE ?", (id,))
@@ -62,8 +61,14 @@ def check_out_form(id, message='', title='Check Out'):
         c.execute("SELECT id, name FROM activities WHERE status = 'active' ORDER BY name")
         activities = c.fetchall()
     start = datetime.datetime.strptime(result['start'], "%Y-%m-%d %H:%M:%S")
-    return template('check_out', title=title, admin=request.get_cookie("admin"), message=message, now=now,
-                    volunteer=volunteer, activities=activities, id=id, values=result, start=start)
+    if result['end'] is None:
+        end = datetime.datetime.now()
+    else:
+        end = datetime.datetime.strptime(result['end'], "%Y-%m-%d %H:%M:%S")
+        title = 'Edit Entry'
+
+    return template('check_out', title=title, admin=request.get_cookie("admin"), message=message,
+                    volunteer=volunteer, activities=activities, id=id, values=result, start=start, end=end)
 
 
 @route('/checkout/<id:int>', method='POST')
@@ -99,15 +104,15 @@ def list_hours(message='', title='Hours Report', start=datetime.date.today(),
         c = conn.cursor()
         if group_by == '':
             c.execute(
-                "SELECT hours.id, volunteers.name AS volunteer, activities.name AS activity, strftime('%m-%d %H:%M',start), strftime('%m-%d %H:%M',end), (strftime('%s',end)-strftime('%s',start))/3600.0 AS totalHours FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id LEFT OUTER JOIN activities ON hours.activity_id=activities.id WHERE start >= ? AND end <= ? ORDER BY start",
+                "SELECT hours.id, volunteers.name AS volunteer, activities.name AS activity, strftime('%m-%d %H:%M',start), strftime('%m-%d %H:%M',end), ROUND((strftime('%s',end)-strftime('%s',start))/3600.0,2) AS totalHours FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id LEFT OUTER JOIN activities ON hours.activity_id=activities.id WHERE start >= ? AND end <= ? ORDER BY start",
                 (start, end))
         elif group_by == 'volunteer':
             c.execute(
-                "SELECT volunteers.name AS volunteer, SUM(strftime('%s',end)-strftime('%s',start))/3600.0 AS totalHours FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id WHERE start >= ? AND end <= ? GROUP BY volunteer_id ORDER BY volunteer",
+                "SELECT volunteers.name AS volunteer, ROUND(SUM(strftime('%s',end)-strftime('%s',start))/3600.0,2) AS totalHours FROM hours JOIN volunteers ON hours.volunteer_id=volunteers.id WHERE start >= ? AND end <= ? GROUP BY volunteer_id ORDER BY volunteer",
                 (start, end))
         elif group_by == 'activity':
             c.execute(
-                "SELECT activities.name AS activity, SUM(strftime('%s',end)-strftime('%s',start))/3600.0 AS totalHours FROM hours JOIN activities ON hours.activity_id=activities.id WHERE start >= ? AND end <= ? GROUP BY activity_id ORDER BY activity",
+                "SELECT activities.name AS activity, ROUND(SUM(strftime('%s',end)-strftime('%s',start))/3600.0,2) AS totalHours FROM hours JOIN activities ON hours.activity_id=activities.id WHERE start >= ? AND end <= ? GROUP BY activity_id ORDER BY activity",
                 (start, end))
         hours = c.fetchall()
     return template('hour_list', title=title, admin=request.get_cookie("admin"), message=message, rows=hours,

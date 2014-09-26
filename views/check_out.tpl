@@ -10,7 +10,7 @@
       <input type="date" name="start_date" value="{{timeval.date()}}">
       <select name="start_hour">
         %for val in range(1,13):
-          %if val == timeval.hour % 12:
+          %if (val == timeval.hour % 12) or (val == 12 and timeval.hour % 12 == 0):
             <option value={{val}} selected>{{val}}</option>
           %else:
             <option value={{val}}>{{val}}</option>
@@ -40,11 +40,12 @@
   </tr>
   <tr>
     <td>Checked Out</td>
+    %timeval = end
     <td>
-      <input type="date" name="end_date" value="{{now.date()}}">
+      <input type="date" name="end_date" value="{{timeval.date()}}">
       <select name="end_hour">
         %for val in range(1,13):
-          %if val == now.hour % 12:
+          %if (val == timeval.hour % 12) or (val == 12 and timeval.hour % 12 == 0):
             <option value={{val}} selected>{{val}}</option>
           %else:
             <option value={{val}}>{{val}}</option>
@@ -54,7 +55,7 @@
       :
       <select name="end_minute">
         %for val in range(0,60):
-          %if val == now.minute:
+          %if val == timeval.minute:
             <option value={{val}} selected>{{"{:02d}".format(val)}}</option>
           %else:
             <option value={{val}}>{{"{:02d}".format(val)}}</option>
@@ -62,7 +63,7 @@
         %end
       </select>
       <select name="end_ampm">
-        %if now.hour / 12 == 0:
+        %if timeval.hour / 12 == 0:
           <option value="AM" selected>AM</option>
           <option value="PM">PM</option>
         %else:
@@ -97,7 +98,7 @@
   </tr>
   <tr>
     <td>
-      <input type="submit" value="Check Out" />
+      <input type="submit" value="{{title}}" />
       <a href="/"><input type="button" value="Cancel"/></a>
     </td>
   <tr>

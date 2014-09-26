@@ -43,8 +43,8 @@
         <td>{{row['strftime(\'%m-%d %H:%M\',start)']}}</td>
         <td>{{row['strftime(\'%m-%d %H:%M\',end)']}}</td>
         <td>{{row['totalHours']}}</td>
-        <td><a href="/checkout/{{row['id']}}"><input type="button" value="Edit"/></a></td>
-        <td><a href="/hours/{{row['id']}}/delete"><input type="button" value="Delete"/></a></td>
+        <td><a href="/checkout/{{row['id']}}">Edit</a></td>
+        <td><a href="/hours/{{row['id']}}/delete">Delete</a></td>
       </tr>
   %end
 </table>
