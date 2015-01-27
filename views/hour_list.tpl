@@ -1,6 +1,16 @@
 %rebase ('layout.tpl')
 
 <form method="POST" action="/hours">
+    Name <select name="volunteer_id">
+      <option value="">All Volunteers</option>
+      %for val in volunteers:
+        %if volunteer_id == str(val["id"]):
+          <option value={{val["id"]}} selected>{{val["name"]}}</option>
+        %else:
+          <option value={{val["id"]}}>{{val["name"]}}</option>
+        %end
+      %end
+    </select>
     From <input type="date" name="start" value="{{start}}">
     To <input type="date" name="end" value="{{end}}">
     Sum <select name="group_by">
@@ -40,8 +50,8 @@
     %end
         <td>{{row['volunteer']}}</td>
         <td>{{row['activity']}}</td>
-        <td>{{row['strftime(\'%m-%d %H:%M\',start)']}}</td>
-        <td>{{row['strftime(\'%m-%d %H:%M\',end)']}}</td>
+        <td>{{row['strftime(\'%m/%d/%Y %H:%M\',start)']}}</td>
+        <td>{{row['strftime(\'%m/%d/%Y %H:%M\',end)']}}</td>
         <td>{{row['totalHours']}}</td>
         <td><a href="/checkout/{{row['id']}}">Edit</a></td>
         <td><a href="/hours/{{row['id']}}/delete">Delete</a></td>

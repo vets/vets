@@ -23,7 +23,7 @@
       <tr>
     %end
         <td>{{row['volunteer']}}</td>
-        <td>{{row['strftime(\'%m-%d %H:%M\',start)']}}</td>
+        <td>{{row['strftime(\'%m/%d/%Y %H:%M\',start)']}}</td>
         <td><a href="/checkout/{{row['id']}}"><input type="button" value="Check Out"/></a></td>
       </tr>
   %end
